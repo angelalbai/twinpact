@@ -8,9 +8,9 @@ const PORT = 3000;
 app.use(express.static(path.join(__dirname, "scripts")));
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "scripts", "index.html"), (err) => {
+    res.sendFile(path.join(__dirname, "scripts", "beg-page.html"), (err) => {
         if (err) {
-            res.status(500).send("Error loading index.html");
+            res.status(500).send("Error loading beg-page.html");
         }
     });
 });
