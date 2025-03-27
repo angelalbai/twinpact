@@ -1,6 +1,6 @@
 body {
     background: linear-gradient(to bottom, #9f601c, #4f1111); /* Ombre from pink to orange */
-    font-family: Arial, sans-serif;
+    font-family: Inter;
     text-align: center;
     height: 100vh; /* Full viewport height */
     margin: 0;
@@ -14,35 +14,39 @@ font-size: 20px;
 font-family: Kode Mono;
 font-weight: 400;
 letter-spacing: 0%;
+margin-top:-25px;
 }
 .logo{
     height:250px;
     width: 250px;
+   margin-top: -96px;
 }
-.beg-cont{
-    height:600px;
-    width: 700px;
-    border-radius: 25px 45px; 
-    background-color: #F6F4F0;
-    padding: top 40px;
-    padding:bottom 40px;
-    padding-left: 60px;
-    padding-right:60px;
-}
+.beg-cont {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 400px; 
+        width: 600px;
+        border-radius: 45px;
+        background-color: #F6F4F0;
+        padding: 40px 60px;
+        text-align: center;
+    }
+    
 .center-button {
     padding: 10px 20px; /* Adjust size of the button */
     font-size: 16px;
-    font-family: Inter;
     font-weight: 400;
     letter-spacing: 0%;
-    position: absolute;
     cursor: pointer; /* Makes the button clickable */
     background-color: #451010; /* Red background */
     color: white; /* White text */
     border: none;
+    position:absolute;
     border-radius: 5px; /* Rounded corners */
     transition: background-color 0.3s; /* Smooth transition for hover effect */
-    margin: auto;
+    margin-top:300px;
 
 }
 
