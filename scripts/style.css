@@ -66,7 +66,13 @@ margin-top:-25px;
 .center-button:hover {
     background-color: #f2ae72 /* Darker green when hovered */
 }
-/**Formalities Page**/
+footer{
+    font-size:10px;
+    margin-top:50px;
+    color:white;
+    
+}
+/*Formalities Page*/
 .form-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 2 columns */

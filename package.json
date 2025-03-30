@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "animate.css": "^4.1.1",
+    "animejs": "^3.2.2",
     "express": "^4.21.2"
   }
 }
