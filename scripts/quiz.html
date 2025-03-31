@@ -2,13 +2,290 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>The Twin Pact</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TwinPact - Personality Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="quiz.css">
 </head>
 <body>
-    
+    <div class="page-container">
+
+        <form id="quizForm" class="quiz-container">
+            <img src="logo.png" alt="The Twin Pact" class="logo">
+
+            <div class="questions-grid">
+                <!-- Mixed Questions -->
+                <div class="mc-question">
+                    <label>1. What does your fridge typically look like?</label>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="fridge" value="basic" required>
+                            <span>Ketchup, soy sauce and maybe a Poland Spring</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="fridge" value="stocked">
+                            <span>Stocked up with groceries</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="fridge" value="leftovers">
+                            <span>Old leftovers I swear I'm going to eat</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="slider-question">
+                    <label>2. Is reading the news important?</label>
+                    <input type="range" min="0" max="100" value="50" name="news_importance">
+                    <div class="slider-labels">
+                        <span>Very</span>
+                        <span>Not at all</span>
+                    </div>
+                </div>
+
+                <div class="mc-question">
+                    <label>3. How early do you do your assignments?</label>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="assignments" value="weeks" required>
+                            <span>Weeks before</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="assignments" value="days">
+                            <span>Couple days before</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="assignments" value="last_minute">
+                            <span>Right before class</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="slider-question">
+                    <label>4. Are you the person who texts first?</label>
+                    <input type="range" min="0" max="100" value="50" name="text_first">
+                    <div class="slider-labels">
+                        <span>Always</span>
+                        <span>Never</span>
+                    </div>
+                </div>
+
+                <div class="mc-question">
+                    <label>5. Do you stand or sit on the subway?</label>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="subway" value="stand_jeans" required>
+                            <span>Stand, can't ruin my nice jeans</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="subway" value="pole_gloves">
+                            <span>I'm holding on to the pole with gloves</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="subway" value="sit">
+                            <span>Sit, I'm way too tired</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="subway" value="uber">
+                            <span>Train? I take an Uber</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="slider-question">
+                    <label>6. Is it important to be friends with people that are similar to you?</label>
+                    <input type="range" min="0" max="100" value="50" name="similar_friends">
+                    <div class="slider-labels">
+                        <span>Very important</span>
+                        <span>Not important</span>
+                    </div>
+                </div>
+
+                <div class="mc-question">
+                    <label>7. If we disagree, what are you doing?</label>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="disagreement" value="quiet" required>
+                            <span>Staying quiet and make up a fake scenario where I actually confront you</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="disagreement" value="confront">
+                            <span>Telling you what I think straight up</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="disagreement" value="gossip">
+                            <span>Probably gossip about it to my mom</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="slider-question">
+                    <label>8. Are you more of a "work to live" or a "live to work" type of person?</label>
+                    <input type="range" min="0" max="100" value="50" name="work_life">
+                    <div class="slider-labels">
+                        <span>Work to live</span>
+                        <span>Live to work</span>
+                    </div>
+                </div>
+
+                <div class="mc-question">
+                    <label>9. Do you make eye contact with strangers?</label>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="eye_contact" value="yes" required>
+                            <span>Yes, I don't care</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="eye_contact" value="no">
+                            <span>No, always have my headphones and hood up</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="slider-question">
+                    <label>10. How would you describe your work ethic?</label>
+                    <input type="range" min="0" max="100" value="50" name="work_ethic">
+                    <div class="slider-labels">
+                        <span>I show up. I conquer.</span>
+                        <span>Give me 2-3 weeks</span>
+                    </div>
+                </div>
+
+                <div class="mc-question">
+                    <label>11. Best part of college?</label>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="college_best" value="butler" required>
+                            <span>The long nights at Butler with friends</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="college_best" value="social">
+                            <span>Getting into the Columbia clubs and off a Fiji Partiful waitlist</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="college_best" value="academic">
+                            <span>Academic validation from the professors</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="slider-question">
+                    <label>12. When a stranger talks to me, I consider it an opportunity to make a connection.</label>
+                    <input type="range" min="0" max="100" value="50" name="stranger_connection">
+                    <div class="slider-labels">
+                        <span>Networking</span>
+                        <span>Stranger danger</span>
+                    </div>
+                </div>
+
+                <div class="mc-question">
+                    <label>13. Which Upper West Side restaurant do you identify most with?</label>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="restaurant" value="popupbagels" required>
+                            <span>Pop-up bagels</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="restaurant" value="hooda">
+                            <span>Hooda Halal</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="restaurant" value="rotiroll">
+                            <span>Roti Roll</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="restaurant" value="milano">
+                            <span>Milano Market</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mc-question">
+                    <label>14. What's the worst thing to sit next to in a lecture hall?</label>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="lecture_annoyance" value="gossipers" required>
+                            <span>Two people who won't stop gossiping</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="lecture_annoyance" value="coffee">
+                            <span>A coffee spiller</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="lecture_annoyance" value="bouncer">
+                            <span>A leg bouncer– shaking the whole row with restless energy</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="lecture_annoyance" value="phone">
+                            <span>A phone addict– bright screen flashing in your peripheral vision</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mc-question">
+                    <label>15. Which app are you always on?</label>
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="app" value="tiktok" required>
+                            <span>TikTok</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="app" value="instagram">
+                            <span>Instagram</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="app" value="beli">
+                            <span>Beli</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="app" value="sidechat">
+                            <span>Sidechat</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="app" value="none">
+                            <span>None of the above (I'm better than everyone else)</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-button">Find My Twin</button>
+        </form>
+
+        <div class="success-message">
+            <p>Thanks! We'll find your twin soon!</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('quizForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                const response = await fetch('/submit-quiz', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const successMessage = document.querySelector('.success-message');
+                    successMessage.style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+                } else {
+                    alert('Something went wrong. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Something went wrong. Please try again.');
+            }
+        });
+    </script>
 </body>
+</html>
