@@ -6,7 +6,7 @@ const fs = require('fs');
 const app = express();
 const port = 3000;
 
-// Middleware
+// Basic middleware
 app.use(express.json());
 app.use(express.static('scripts'));
 
@@ -19,8 +19,29 @@ app.get('/quiz', (req, res) => {
     res.sendFile(path.join(__dirname, 'scripts', 'quiz.html'));
 });
 
-// Add routes to view the data
-app.get('/view-data', (req, res) => {
+// Simple admin authentication
+const adminAuth = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Basic ')) {
+        res.set('WWW-Authenticate', 'Basic realm="Admin Access"');
+        return res.status(401).send('Authentication required');
+    }
+    
+    const base64Credentials = authHeader.split(' ')[1];
+    const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
+    const [username, password] = credentials.split(':');
+    
+    if (username === 'admin' && password === 'twinpact2024') {
+        return next();
+    }
+    
+    res.set('WWW-Authenticate', 'Basic realm="Admin Access"');
+    return res.status(401).send('Invalid credentials');
+};
+
+// Admin-only data viewing
+app.get('/view-data', adminAuth, (req, res) => {
     try {
         let data = {
             formResponses: [],
@@ -46,7 +67,7 @@ app.get('/view-data', (req, res) => {
             data.combinedResponses = XLSX.utils.sheet_to_json(combinedWorkbook.Sheets['Combined Responses']);
         }
 
-        // Create HTML response
+        // Create HTML response with escape for safety
         const html = `
             <!DOCTYPE html>
             <html>
@@ -70,7 +91,7 @@ app.get('/view-data', (req, res) => {
                     </tr>
                     ${data.formResponses.map(row => `
                         <tr>
-                            ${Object.values(row).map(value => `<td>${value}</td>`).join('')}
+                            ${Object.values(row).map(value => `<td>${String(value).replace(/</g, '&lt;').replace(/>/g, '&gt;')}</td>`).join('')}
                         </tr>
                     `).join('')}
                 </table>
@@ -82,7 +103,7 @@ app.get('/view-data', (req, res) => {
                     </tr>
                     ${data.quizResponses.map(row => `
                         <tr>
-                            ${Object.values(row).map(value => `<td>${value}</td>`).join('')}
+                            ${Object.values(row).map(value => `<td>${String(value).replace(/</g, '&lt;').replace(/>/g, '&gt;')}</td>`).join('')}
                         </tr>
                     `).join('')}
                 </table>
@@ -94,7 +115,7 @@ app.get('/view-data', (req, res) => {
                     </tr>
                     ${data.combinedResponses.map(row => `
                         <tr>
-                            ${Object.values(row).map(value => `<td>${value}</td>`).join('')}
+                            ${Object.values(row).map(value => `<td>${String(value).replace(/</g, '&lt;').replace(/>/g, '&gt;')}</td>`).join('')}
                         </tr>
                     `).join('')}
                 </table>
@@ -109,7 +130,7 @@ app.get('/view-data', (req, res) => {
     }
 });
 
-// Handle form submissions
+// Handle form submissions - simplified
 app.post('/submit', (req, res) => {
     try {
         const data = req.body;
@@ -151,7 +172,7 @@ app.post('/submit', (req, res) => {
     }
 });
 
-// Handle quiz submissions
+// Handle quiz submissions - simplified
 app.post('/submit-quiz', (req, res) => {
     try {
         const data = req.body;
@@ -227,7 +248,7 @@ function updateCombinedSheet() {
             const quiz = quizResponses.find(q => q.email === form.email);
             return {
                 ...form,
-                ...quiz,
+                ...(quiz || {}),
                 form_submitted_at: form.timestamp,
                 quiz_submitted_at: quiz ? quiz.timestamp : null
             };
