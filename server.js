@@ -32,13 +32,18 @@ const adminAuth = (req, res, next) => {
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
     const [username, password] = credentials.split(':');
     
-    if (username === 'admin' && password === 'twinpact2024') {
+    if (username === 'h4VajHM9il4lzqL' && password === 'srL5VkHpon8NT86') {
         return next();
     }
     
     res.set('WWW-Authenticate', 'Basic realm="Admin Access"');
     return res.status(401).send('Invalid credentials');
 };
+
+// Admin routes
+app.get('/admin', adminAuth, (req, res) => {
+    res.sendFile(path.join(__dirname, 'scripts', 'admin.html'));
+});
 
 // Admin-only data viewing
 app.get('/view-data', adminAuth, (req, res) => {
@@ -130,6 +135,57 @@ app.get('/view-data', adminAuth, (req, res) => {
     }
 });
 
+// Admin-only data clearing endpoint
+app.post('/clear-data', adminAuth, (req, res) => {
+    try {
+        const { form = false, quiz = false, combined = false, all = false } = req.query;
+        const filesToClear = [];
+        
+        if (all || form) {
+            if (fs.existsSync('responses.xlsx')) {
+                const workbook = XLSX.utils.book_new();
+                workbook.SheetNames.push('Form Responses');
+                workbook.Sheets['Form Responses'] = XLSX.utils.json_to_sheet([]);
+                XLSX.writeFile(workbook, 'responses.xlsx');
+                filesToClear.push('responses.xlsx');
+            }
+        }
+        
+        if (all || quiz) {
+            if (fs.existsSync('quiz_responses.xlsx')) {
+                const workbook = XLSX.utils.book_new();
+                workbook.SheetNames.push('Quiz Responses');
+                workbook.Sheets['Quiz Responses'] = XLSX.utils.json_to_sheet([]);
+                XLSX.writeFile(workbook, 'quiz_responses.xlsx');
+                filesToClear.push('quiz_responses.xlsx');
+            }
+        }
+        
+        if (all || combined) {
+            if (fs.existsSync('combined_responses.xlsx')) {
+                const workbook = XLSX.utils.book_new();
+                workbook.SheetNames.push('Combined Responses');
+                workbook.Sheets['Combined Responses'] = XLSX.utils.json_to_sheet([]);
+                XLSX.writeFile(workbook, 'combined_responses.xlsx');
+                filesToClear.push('combined_responses.xlsx');
+            }
+        }
+        
+        if (filesToClear.length === 0) {
+            return res.status(400).json({ success: false, message: 'No files specified to clear' });
+        }
+        
+        res.json({ 
+            success: true, 
+            message: 'Data cleared successfully', 
+            clearedFiles: filesToClear 
+        });
+    } catch (error) {
+        console.error('Error clearing data:', error);
+        res.status(500).json({ success: false, error: 'Failed to clear data' });
+    }
+});
+
 // Handle form submissions - simplified
 app.post('/submit', (req, res) => {
     try {
@@ -172,16 +228,23 @@ app.post('/submit', (req, res) => {
     }
 });
 
-// Handle quiz submissions - simplified
+// Quiz submission endpoint
 app.post('/submit-quiz', (req, res) => {
     try {
-        const data = req.body;
-        data.timestamp = new Date().toISOString();
+        const quizData = req.body;
         
-        // Load or create workbook
+        // Validate that required fields are present
+        if (!quizData.email) {
+            return res.status(400).json({ error: 'Email is required' });
+        }
+        
+        // Add timestamp
+        quizData.timestamp = new Date().toISOString();
+        
         let workbook;
         const filePath = 'quiz_responses.xlsx';
-        
+
+        // Load or create workbook
         if (fs.existsSync(filePath)) {
             workbook = XLSX.readFile(filePath);
         } else {
@@ -189,28 +252,30 @@ app.post('/submit-quiz', (req, res) => {
             workbook.SheetNames.push('Quiz Responses');
             workbook.Sheets['Quiz Responses'] = XLSX.utils.json_to_sheet([]);
         }
-        
-        // Get the existing data
-        const sheet = workbook.Sheets['Quiz Responses'];
-        const existingData = XLSX.utils.sheet_to_json(sheet);
-        
+
+        // Get existing data
+        let responses = [];
+        if (workbook.SheetNames.includes('Quiz Responses')) {
+            responses = XLSX.utils.sheet_to_json(workbook.Sheets['Quiz Responses']);
+        }
+
         // Add new response
-        existingData.push(data);
+        responses.push(quizData);
         
         // Update the sheet
-        const newSheet = XLSX.utils.json_to_sheet(existingData);
+        const newSheet = XLSX.utils.json_to_sheet(responses);
         workbook.Sheets['Quiz Responses'] = newSheet;
-        
+
         // Save the file
         XLSX.writeFile(workbook, filePath);
         
-        // Update combined sheet
+        // Update combined sheet with new data
         updateCombinedSheet();
-        
-        res.json({ success: true });
+
+        res.status(200).json({ message: 'Quiz submitted successfully' });
     } catch (error) {
-        console.error('Error saving quiz data:', error);
-        res.status(500).json({ success: false, error: 'Failed to save data' });
+        console.error('Error saving quiz response:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
@@ -245,7 +310,12 @@ function updateCombinedSheet() {
         
         // Combine responses
         const combinedData = formResponses.map(form => {
-            const quiz = quizResponses.find(q => q.email === form.email);
+            // Find matching quiz by email (case insensitive)
+            const quiz = quizResponses.find(q => 
+                q.email && form.email && 
+                q.email.toLowerCase() === form.email.toLowerCase()
+            );
+            
             return {
                 ...form,
                 ...(quiz || {}),
@@ -260,6 +330,8 @@ function updateCombinedSheet() {
         
         // Save the file
         XLSX.writeFile(workbook, combinedFilePath);
+        
+        console.log(`Combined sheet updated: ${combinedData.length} entries processed.`);
     } catch (error) {
         console.error('Error updating combined sheet:', error);
     }
