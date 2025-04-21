@@ -48,7 +48,7 @@ img {
     display: block;
     font-weight: 500;
     margin-bottom: 1rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-family: 'Courier New', monospace;
     color: #333;
 }
@@ -95,7 +95,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
     display: block;
     font-weight: 500;
     margin-bottom: 1rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-family: 'Courier New', monospace;
     color: #000000;
 }
@@ -129,10 +129,13 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .option span {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: #333;
 }
-
+.backToPage1{
+    background-color: #F6F4F0;
+    color:#380202;
+}
 /* Submit Button */
 .submit-button {
     display: block;
@@ -180,32 +183,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
     letter-spacing: 1px;
 }
 
-/* Email Verification Section */
-.email-verification {
-    width: 100%;
-    margin: 1rem 0 2rem;
-    text-align: center;
-    padding: 1rem;
-    background-color: #f8f8f8;
-    border-radius: 12px;
-    border: 1px solid #E0E0E0;
-}
-
-.email-verification p {
-    margin-bottom: 0.75rem;
-    font-size: 0.95rem;
-    color: #333;
-}
-
-.email-verification input {
-    width: 80%;
-    max-width: 400px;
-    padding: 0.75rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1rem;
-    text-align: center;
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {

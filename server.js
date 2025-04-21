@@ -19,6 +19,10 @@ app.get('/quiz', (req, res) => {
     res.sendFile(path.join(__dirname, 'scripts', 'quiz.html'));
 });
 
+app.get('/completion', (req, res) => {
+    res.sendFile(path.join(__dirname, 'scripts', 'completion.html'));
+});
+
 // Simple admin authentication
 const adminAuth = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -186,7 +190,7 @@ app.post('/clear-data', adminAuth, (req, res) => {
     }
 });
 
-// Handle form submissions - simplified
+// Handle form submissions
 app.post('/submit', (req, res) => {
     try {
         const data = req.body;
@@ -233,11 +237,6 @@ app.post('/submit-quiz', (req, res) => {
     try {
         const quizData = req.body;
         
-        // Validate that required fields are present
-        if (!quizData.email) {
-            return res.status(400).json({ error: 'Email is required' });
-        }
-        
         // Add timestamp
         quizData.timestamp = new Date().toISOString();
         
@@ -269,13 +268,13 @@ app.post('/submit-quiz', (req, res) => {
         // Save the file
         XLSX.writeFile(workbook, filePath);
         
-        // Update combined sheet with new data
+        // Update combined sheet
         updateCombinedSheet();
 
-        res.status(200).json({ message: 'Quiz submitted successfully' });
+        res.status(200).json({ success: true, message: 'Quiz submitted successfully' });
     } catch (error) {
         console.error('Error saving quiz response:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ success: false, error: 'Internal server error' });
     }
 });
 
@@ -308,20 +307,37 @@ function updateCombinedSheet() {
             quizResponses = XLSX.utils.sheet_to_json(quizWorkbook.Sheets['Quiz Responses']);
         }
         
-        // Combine responses
-        const combinedData = formResponses.map(form => {
-            // Find matching quiz by email (case insensitive)
-            const quiz = quizResponses.find(q => 
-                q.email && form.email && 
-                q.email.toLowerCase() === form.email.toLowerCase()
-            );
+        // Create a map of all unique emails
+        const allEmails = new Set([
+            ...formResponses.map(form => form.email?.toLowerCase()),
+            ...quizResponses.map(quiz => quiz.email?.toLowerCase())
+        ].filter(Boolean));
+        
+        // Combine all responses, starting with quiz data and adding form data if available
+        const combinedData = [];
+        
+        allEmails.forEach(email => {
+            const quiz = quizResponses.find(q => q.email?.toLowerCase() === email);
+            const form = formResponses.find(f => f.email?.toLowerCase() === email);
             
-            return {
-                ...form,
-                ...(quiz || {}),
-                form_submitted_at: form.timestamp,
-                quiz_submitted_at: quiz ? quiz.timestamp : null
-            };
+            if (quiz || form) {
+                combinedData.push({
+                    // Common identifier fields first
+                    email: (quiz || form).email,
+                    name: form ? form.name : 'Unknown',
+                    phone: form ? form.phone : null,
+                    year: form ? form.year : null,
+                    major: form ? form.major : null,
+                    campus: form ? form.campus : null,
+                    
+                    // Include quiz data if available
+                    ...(quiz || {}),
+                    
+                    // Timestamps
+                    form_submitted_at: form ? form.timestamp : null,
+                    quiz_submitted_at: quiz ? quiz.timestamp : null
+                });
+            }
         });
         
         // Update the combined sheet
