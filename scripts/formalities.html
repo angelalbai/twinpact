@@ -7,42 +7,45 @@
     <link rel="stylesheet" href="formalities.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Let's Get to Know You</h1>
-    <p class="subtitle">Tell us a bit about yourself to help us find your perfect match</p>
+    <div class="page-container">
+        <div class="form-container">
+            <img src="logo.png" alt="Twin Pact Logo" class="logo">
+            <p class="subtitle">Tell us a bit about yourself to help us find your match</p>
 
-    <div class="form-container">
-        <form id="matchForm" onsubmit="handleSubmit(event)">
-            <input type="text" id="name" name="name" placeholder="Your Name" required>
-            <input type="email" id="email" name="email" placeholder="Your Email" required>
-            <input type="tel" id="phone" name="phone" placeholder="Your Phone Number" required>
-            <select id="year" name="year" class="form-select" required>
-                <option value="" disabled selected>Class Year</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-                <option value="2028">2028</option>
-            </select>
-            <input type="text" id="major" name="major" placeholder="Major" required>
-            <select id="campus" name="campus" class="form-select" required>
-                <option value="" disabled selected>School</option>
-                <option value="Columbia College">Columbia College</option>
-                <option value="SEAS">SEAS</option>
-                <option value="Barnard">Barnard</option>
-            </select>            
-            <button type="submit" href="quiz.html"class="submit-button">Find My Match</button>
-        </form>
+            <form id="matchForm" onsubmit="handleSubmit(event)">
+                <input type="text" id="name" name="name" placeholder="Your Name" required>
+                <input type="email" id="email" name="email" placeholder="Your Email" required>
+                <input type="tel" id="phone" name="phone" placeholder="Your Phone Number" required>
+                <select id="year" name="year" class="form-select" required>
+                    <option value="" disabled selected>Class Year</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                    <option value="2028">2028</option>
+                </select>
+                <input type="text" id="major" name="major" placeholder="Major" required>
+                <select id="campus" name="campus" class="form-select" required>
+                    <option value="" disabled selected>School</option>
+                    <option value="Columbia College">Columbia College</option>
+                    <option value="SEAS">SEAS</option>
+                    <option value="GS">GS</option>
+                    <option value="Barnard">Barnard</option>
+                </select>            
+                <button type="submit" class="submit-button">Find My Match</button>
+            </form>
+        </div>
+
+        <div id="successMessage" class="success-message">
+            <p>Thank you for your submission! Redirecting to quiz...</p>
+        </div>
+
+        <footer>
+            <p>© Barnard Columbia Design for America</p>
+        </footer>
     </div>
-
-    <div id="successMessage" class="success-message">
-        <p>Thank you for your submission! We'll be in touch soon.</p>
-    </div>
-
-    <footer>
-        <p>© Barnard Columbia Design for America</p>
-    </footer>
 
     <script>
         async function handleSubmit(event) {
@@ -63,6 +66,7 @@
                 
                 const result = await response.json();
                 
+         
                 if (result.success) {
                     form.reset();
                     document.getElementById('successMessage').style.display = 'block';
