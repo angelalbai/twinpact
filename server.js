@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const XLSX = require('xlsx');
 const fs = require('fs');
+const session = require('express-session');
 
 const app = express();
 const port = 3000;
@@ -10,13 +11,40 @@ const port = 3000;
 app.use(express.json());
 app.use(express.static('scripts'));
 
+// Add session middleware
+app.use(session({
+    secret: 'twin-pact-secret-key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false, maxAge: 3600000 } // 1 hour
+}));
+
 // Routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'scripts', 'formalities.html'));
 });
 
 app.get('/quiz', (req, res) => {
+    if (!req.session.userData) {
+        // If no session data, redirect to form
+        return res.redirect('/');
+    }
     res.sendFile(path.join(__dirname, 'scripts', 'quiz.html'));
+});
+
+// Check if user has session data
+app.get('/check-session', (req, res) => {
+    if (req.session.userData && req.session.userData.email) {
+        res.json({ 
+            hasSession: true, 
+            userData: {
+                email: req.session.userData.email,
+                name: req.session.userData.name
+            }
+        });
+    } else {
+        res.json({ hasSession: false });
+    }
 });
 
 app.get('/completion', (req, res) => {
@@ -196,6 +224,17 @@ app.post('/submit', (req, res) => {
         const data = req.body;
         data.timestamp = new Date().toISOString();
         
+        // Store user data in session for linking with quiz later
+        req.session.userData = {
+            email: data.email,
+            name: data.name,
+            phone: data.phone,
+            year: data.year,
+            major: data.major,
+            campus: data.campus,
+            timestamp: data.timestamp
+        };
+        
         // Load or create workbook
         let workbook;
         const filePath = 'responses.xlsx';
@@ -239,6 +278,16 @@ app.post('/submit-quiz', (req, res) => {
         
         // Add timestamp
         quizData.timestamp = new Date().toISOString();
+        
+        // Get user data from session and add email to quiz data
+        if (req.session.userData && req.session.userData.email) {
+            quizData.email = req.session.userData.email;
+        } else {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Session data not found. Please fill out the form first.' 
+            });
+        }
         
         let workbook;
         const filePath = 'quiz_responses.xlsx';
